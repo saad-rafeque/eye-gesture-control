@@ -63,7 +63,7 @@ def move_mouse_cross_platform(dx, dy, duration=0):
             print(f"X11 direct mouse movement failed: {e}")
         
         # If we reached here, all methods failed
-        print("❌ All mouse movement methods failed on Linux. Please check your setup.")
+        print("ERROR: All mouse movement methods failed on Linux. Please check your setup.")
         return False
     
     # MacOS or other platforms - fall back to PyAutoGUI
@@ -117,22 +117,22 @@ except ImportError:
 if platform.system() == 'Linux':
     # Check for X11 display environment
     if 'DISPLAY' not in os.environ:
-        print("⚠️ Warning: DISPLAY environment variable not set, defaulting to :0")
+        print("Warning: DISPLAY environment variable not set, defaulting to :0")
         os.environ['DISPLAY'] = ':0'
     
     # Check for required Linux dependencies
     if os.system("which xdotool > /dev/null 2>&1") != 0:
-        print("ℹ️ xdotool not found - this utility helps with mouse control on Linux")
+        print("xdotool not found - this utility helps with mouse control on Linux")
         print("  To install: sudo apt-get install xdotool")
     
     try:
         import Xlib.display
-        print(f"✅ Xlib module found, connected to X11 display: {os.environ['DISPLAY']}")
+        print(f"Xlib module found, connected to X11 display: {os.environ['DISPLAY']}")
     except ImportError:
-        print("ℹ️ Python-Xlib not found - this module helps with direct X11 control")
+        print("Python-Xlib not found - this module helps with direct X11 control")
         print("  To install: pip install python-xlib")
     
-    print(f"ℹ️ Linux display server: {os.environ.get('XDG_SESSION_TYPE', 'unknown')} (X11/Xorg is recommended)")
+    print(f"Linux display server: {os.environ.get('XDG_SESSION_TYPE', 'unknown')} (X11/Xorg is recommended)")
 
 # Enable failsafe (move cursor to corner to abort)
 pyautogui.FAILSAFE = False
@@ -361,7 +361,7 @@ try:
                 
                 # Regular blink detection
                 if current_ear < BLINK_THRESHOLD and now > blink_cd:
-                    print(f"👁️ Blink detected (EAR: {current_ear:.3f})")
+                    print(f"Blink detected (EAR: {current_ear:.3f})")
                     pyautogui.click()
                     blink_cd = now + BLINK_COOLDOWN_S
                     last_emit = now
@@ -373,7 +373,7 @@ try:
                         eye_close_start = now
                     elif now - eye_close_start >= LONG_BLINK_DURATION and now > last_pause_toggle + PAUSE_RESUME_COOLDOWN:
                         commands_paused = not commands_paused
-                        print(f"👁️ Commands {'PAUSED' if commands_paused else 'RESUMED'} (long blink: {now - eye_close_start:.2f}s)")
+                        print(f"Commands {'PAUSED' if commands_paused else 'RESUMED'} (long blink: {now - eye_close_start:.2f}s)")
                         last_pause_toggle = now
                         eye_close_start = 0
                 elif current_ear >= LONG_BLINK_THRESHOLD:
@@ -388,7 +388,7 @@ try:
 
         # Emit command - only if not paused
         if not commands_paused and label != 'centre' and stable >= STABLE_FRAMES and now - last_emit > COOLDOWN_SECONDS:
-            print('➡️', label.upper(), f"(stable: {stable})")
+            print('->', label.upper(), f"(stable: {stable})")
             if USE_ARROW_KEYS:
                 pyautogui.press(label)
             else:
@@ -480,7 +480,7 @@ finally:
     if 'cam' in locals() and cam is not None:
         cam.release()
     cv2.destroyAllWindows()
-    print("ℹ️ Eye tracking system closed.")
+    print("Eye tracking system closed.")
 
     # Print usage instructions on exit
     print("\n== Eye Tracking Control System ==")
