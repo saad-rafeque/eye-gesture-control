@@ -51,7 +51,7 @@ cam = cv2.VideoCapture(CAM_INDEX, cv2.CAP_DSHOW if sys.platform.startswith("win"
 cam.set(cv2.CAP_PROP_FRAME_WIDTH, CAM_WIDTH)
 cam.set(cv2.CAP_PROP_FRAME_HEIGHT, CAM_HEIGHT)
 if not cam.isOpened():
-    sys.exit(f"❌ Cannot open camera {CAM_INDEX}")
+    sys.exit(f"ERROR: Cannot open camera {CAM_INDEX}")
 
 mp_face = mp.solutions.face_mesh
 face_mesh = mp_face.FaceMesh(max_num_faces=1, refine_landmarks=True,
@@ -125,7 +125,7 @@ POSES = [
     ("centre", (SCREEN_W//2, SCREEN_H//2)),
 ]
 centroids: Dict[str, np.ndarray] = {}
-print("🧭 Calibration – follow the dot")
+print("Calibration – follow the dot")
 for k, pt in POSES:
     print(f"   → look {k}")
     buf = []
@@ -165,7 +165,7 @@ for k, pt in POSES:
 
     if not buf:
          # Handle case where no valid data was collected for a pose
-         print(f"❌ ERROR: No valid eye data collected for '{k}' pose. Calibration failed.")
+         print(f"ERROR: No valid eye data collected for '{k}' pose. Calibration failed.")
          print("Ensure good lighting and clear view of the face.")
          cam.release()
          cv2.destroyAllWindows()
@@ -177,7 +177,7 @@ cv2.destroyWindow(CALIB_WIN)
 # Check if all required centroids were captured
 required_keys = {"left", "right", "centre"}
 if not required_keys.issubset(centroids.keys()):
-    print("❌ ERROR: Calibration did not capture all required poses.")
+    print("ERROR: Calibration did not capture all required poses.")
     cam.release()
     cv2.destroyAllWindows()
     sys.exit("Incomplete calibration.")
@@ -188,7 +188,7 @@ base_dist = {k: np_norm(v-centre) for k, v in centroids.items() if k in ('left',
 
 print(f"Centre: {centre}")
 print(f"Base distances - Left: {base_dist.get('left', 0):.3f}, Right: {base_dist.get('right', 0):.3f}")
-print("✅ Calibration complete")
+print("Calibration complete")
 
 # ---------- main loop ---------------------------
 sm_x, sm_y = deque(maxlen=SMOOTH), deque(maxlen=SMOOTH)
@@ -252,7 +252,7 @@ while True:
             
             # Regular blink detection
             if current_ear < BLINK_THRESHOLD and now > blink_cd:
-                print(f"👁️ Blink detected (EAR: {current_ear:.3f})")
+                print(f"Blink detected (EAR: {current_ear:.3f})")
                 pyautogui.click()
                 blink_cd = now + BLINK_COOLDOWN_S
                 last_emit = now # Prevent move immediately after click
@@ -265,7 +265,7 @@ while True:
                 elif now - eye_close_start >= LONG_BLINK_DURATION and now > last_pause_toggle + PAUSE_RESUME_COOLDOWN:
                     # Long blink detected - toggle pause state
                     commands_paused = not commands_paused
-                    print(f"👁️ Commands {'PAUSED' if commands_paused else 'RESUMED'} (long blink: {now - eye_close_start:.2f}s)")
+                    print(f"Commands {'PAUSED' if commands_paused else 'RESUMED'} (long blink: {now - eye_close_start:.2f}s)")
                     last_pause_toggle = now
                     eye_close_start = 0  # Reset timer
             elif current_ear >= LONG_BLINK_THRESHOLD:
@@ -283,7 +283,7 @@ while True:
 
     # emit command - only if not paused
     if not commands_paused and label != 'centre' and stable >= STABLE_FRAMES and now - last_emit > COOLDOWN_SECONDS:
-        print('➡️', label.upper(), f"(stable: {stable})")
+        print('->', label.upper(), f"(stable: {stable})")
         if USE_ARROW_KEYS:
             pyautogui.press(label)
         else:
@@ -337,4 +337,4 @@ while True:
 
 cam.release()
 cv2.destroyAllWindows()
-print("ℹ️ Script finished.")
+print("Script finished.")
