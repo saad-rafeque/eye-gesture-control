@@ -108,11 +108,11 @@ except Exception as e:
 # Calculate movement pixels based on screen width
 MOVE_PIXELS = int(SCREEN_W * MOVE_PERCENT / 100)
 
-print(f"📊 Screen Info: {SCREEN_W}x{SCREEN_H} pixels")
+print(f"Screen Info: {SCREEN_W}x{SCREEN_H} pixels")
 if physical_size_inches:
-    print(f"📏 Detected screen size: ~{physical_size_inches} inches diagonal")
-print(f"🖱️ Cursor movement set to {MOVE_PERCENT}% of screen width ({MOVE_PIXELS} pixels)")
-print(f"🎯 Center dead zone: {CENTER_WIDTH_PCT}% of view")
+    print(f"Detected screen size: ~{physical_size_inches} inches diagonal")
+print(f"Cursor movement set to {MOVE_PERCENT}% of screen width ({MOVE_PIXELS} pixels)")
+print(f"Center dead zone: {CENTER_WIDTH_PCT}% of view")
 
 # ---------- Camera Setup -----------------------
 try:
@@ -140,7 +140,7 @@ try:
         raise Exception(f"Could not open camera with index {CAM_INDEX}")
         
 except Exception as e:
-    print(f"❌ Camera initialization error: {e}")
+    print(f"ERROR: Camera initialization error: {e}")
     print("Please check your camera connection and permissions")
     if platform.system() == 'Linux':
         print("On Linux, you may need to give camera permissions:")
@@ -212,14 +212,14 @@ half_center = CENTER_WIDTH_PCT / 200.0  # Half width of center region (as 0-1 no
 left_threshold = 0.5 - half_center     # Left boundary of center region
 right_threshold = 0.5 + half_center    # Right boundary of center region
 
-print("✅ Eye tracking initialized with automatic region detection")
-print(f"🎯 Center dead zone: {CENTER_WIDTH_PCT}% of view (x: {left_threshold:.2f} to {right_threshold:.2f})")
-print("👁️ Looking left of center region moves cursor left")
-print("👁️ Looking right of center region moves cursor right")
-print("👁️ Looking in center region keeps cursor still")
-print("👁️ Blink to click, long blink (1 second) to pause/resume")
-print("⚠️ Move cursor to screen corner to exit (failsafe)")
-print(f"🖥️ Detected OS: {platform.system()} {platform.release()}")
+print("Eye tracking initialized with automatic region detection")
+print(f"Center dead zone: {CENTER_WIDTH_PCT}% of view (x: {left_threshold:.2f} to {right_threshold:.2f})")
+print("Looking left of center region moves cursor left")
+print("Looking right of center region moves cursor right")
+print("Looking in center region keeps cursor still")
+print("Blink to click, long blink (1 second) to pause/resume")
+print("WARNING: Move cursor to screen corner to exit (failsafe)")
+print(f"Detected OS: {platform.system()} {platform.release()}")
 
 # ---------- Main Loop Setup -------------------
 sm_x, sm_y = deque(maxlen=SMOOTH), deque(maxlen=SMOOTH)
@@ -278,7 +278,7 @@ try:
                 
                 # Regular blink detection
                 if current_ear < BLINK_THRESHOLD and now > blink_cd:
-                    print(f"👁️ Blink detected (EAR: {current_ear:.3f})")
+                    print(f"Blink detected (EAR: {current_ear:.3f})")
                     pyautogui.click()
                     blink_cd = now + BLINK_COOLDOWN_S
                     last_emit = now
@@ -290,7 +290,7 @@ try:
                         eye_close_start = now
                     elif now - eye_close_start >= LONG_BLINK_DURATION and now > last_pause_toggle + PAUSE_RESUME_COOLDOWN:
                         commands_paused = not commands_paused
-                        print(f"👁️ Commands {'PAUSED' if commands_paused else 'RESUMED'} (long blink: {now - eye_close_start:.2f}s)")
+                        print(f"Commands {'PAUSED' if commands_paused else 'RESUMED'} (long blink: {now - eye_close_start:.2f}s)")
                         last_pause_toggle = now
                         eye_close_start = 0
                 elif current_ear >= LONG_BLINK_THRESHOLD:
@@ -305,7 +305,7 @@ try:
 
         # Emit command - only if not paused
         if not commands_paused and label != 'centre' and stable >= STABLE_FRAMES and now - last_emit > COOLDOWN_SECONDS:
-            print('➡️', label.upper(), f"(stable: {stable})")
+            print('->', label.upper(), f"(stable: {stable})")
             if USE_ARROW_KEYS:
                 pyautogui.press(label)
             else:
@@ -397,7 +397,7 @@ finally:
     if 'cam' in locals() and cam is not None:
         cam.release()
     cv2.destroyAllWindows()
-    print("ℹ️ Eye tracking system closed.")
+    print("Eye tracking system closed.")
 
     # Print usage instructions on exit
     print("\n== Eye Tracking Control System ==")
