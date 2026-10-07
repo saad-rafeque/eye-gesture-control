@@ -16,9 +16,9 @@ This is the vision front end of Sight Switch, my final-year project: smart-home 
 
 | Script | Use it when |
 | --- | --- |
-| `Pupil-Tracker.py` | You want the best accuracy. Runs a short calibration at start. |
-| `No-Calibration-Needed` | You want to start immediately. Has Linux, macOS and Windows code paths. |
-| `Windows-No-Calibration-Needed` | Same idea, Windows variant. |
+| `pupil_tracker.py` | You want the best accuracy. Runs a short calibration at start. |
+| `no_calibration.py` | You want to start immediately. Has Linux, macOS and Windows code paths. |
+| `no_calibration_windows.py` | Same idea, Windows variant. |
 
 ## Quick start
 
@@ -29,8 +29,8 @@ git clone https://github.com/saad-rafeque/eye-gesture-control.git
 cd eye-gesture-control
 pip install -r requirements.txt
 
-python Pupil-Tracker.py           # with calibration
-python No-Calibration-Needed      # without calibration
+python pupil_tracker.py     # with calibration
+python no_calibration.py    # without calibration
 ```
 
 Press `q` in the debug window to quit, or `Ctrl+C` in the terminal.
